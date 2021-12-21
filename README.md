@@ -44,3 +44,22 @@ Example:
 npm run build
 npm start . /path/to/folder
 ```
+
+## Technical Notes
+
+### Performance Design Choices
+
+- When the file explorer is first opened only the first level of the directory tree is loaded, while the subfolders are lazy-loaded until they're opened by the user. When a given folder in the tree view is collapsed by the user it is automatically unmounted which allows to keep the DOM as small as possible when expanding multiple folders over time.
+
+- The file explorer component uses a recursive component tree of smaller individual tree view components which only track the first level of a single folder each one, which keeps the UI responsive by saving React from having to do a full reconciliation/diffing and re-rendering of the whole directory tree whenever the state (which contains the currently loaded file/folder structures) is updated, which is specially useful when dealing with large directory trees.
+
+- To allow the file explorer to automatically reflect changes in the files and folders that it has loaded, a simple timer-based polling approach was chosen to frequently reload the entries of the currently opened (expanded) folders in the tree view every couple of seconds (configurable in the code of the `PathExplorerTreeView` component). When a folder is closed (collapsed) in the tree view, the timer is automatically destroyed in order to reduce the extent of polling to the minimum possible.
+
+### Project Structure
+
+- `pages/`: Contains the code for the user interface views (except for the `api/` subfolder, see below, follows Next.js's default project structure).
+  - `pages/_app.tsx`: Entrypoint for application. Loads `pages/index.tsx` as default view.
+- `pages/api/`: Contains the code for the backend API endpoints that power the UI. Uses Next.js's file-system-based routing (just like with the UI views).
+- `styles/`: Contains the styles for the UI views. They're automatically namespaced by taking advantage of Next.js's support for CSS modules, so we don't have to worry about style collisions.
+- `public/`: Contains UI assets (e.g. images, icons, etc.) - _not used currently_
+- `lib/`: Contains local helper functions.
