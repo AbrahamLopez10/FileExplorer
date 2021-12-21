@@ -1,34 +1,38 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+This file explorer was built using [TypeScript](https://www.typescriptlang.org/), [Next.js](https://nextjs.org/), and the [MUI 5](https://mui.com/) [Tree View component](https://mui.com/components/tree-view/).
+
+**Author**: [Abraham Lopez](https://www.linkedin.com/in/ablopezr/) ([ablopez824@gmail.com](ablopez824@gmail.com))
 
 ## Getting Started
 
-First, run the development server:
+To run in development mode use the following command (_be sure to not miss the `.` dot in the middle_) and replace `/path/to/folder` with the absolute or relative path to the folder you want to explore (e.g. use `~/` if you want to explore your user folder in a Linux/Mac environment):
 
 ```bash
-npm run dev
-# or
-yarn dev
+npm run dev . /path/to/folder
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+> Tip: Be sure to put your folder path between double quotes if the path contains spaces.
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+As a quick test, you can explore the files and folders of this project by running the following command (_be sure to include the slash at the end, otherwise the pointer to the current path will be ignored_):
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+```bash
+npm run dev . ./
+```
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+If you want to explore multiple folders just separate them with spaces, for example:
 
-## Learn More
+```bash
+npm run dev . "/path/to/folder1" "/path/to/folder2" "/path/to/folder3"
+```
 
-To learn more about Next.js, take a look at the following resources:
+Then, open [http://localhost:3000](http://localhost:3000) in your web browser to use the file explorer for this folder(s).
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Run in Production
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+To run the file explorer in production mode please execute `npm run build` first and then use `npm start` instead of `npm run dev` as described in the previous section.
 
-## Deploy on Vercel
+Example:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+```bash
+npm run build
+npm start . /path/to/folder
+```

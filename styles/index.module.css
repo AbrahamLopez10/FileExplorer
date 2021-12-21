@@ -1,0 +1,26 @@
+.main {
+  width: 60vw;
+  min-height: 85vh;
+  margin: 0 auto;
+  padding: 2rem 0;
+}
+
+.heading {
+  margin: 1rem 0;
+  font-size: 1.25rem;
+  line-height: 1.5rem;
+  text-align: center;
+}
+
+.loading {
+  margin: 1rem 0;
+  font-size: 2rem;
+  text-align: center;
+  color: #bbbbbb;
+}
+
+.footer {
+  padding: 2rem 0;
+  border-top: 1px solid #eaeaea;
+  text-align: center;
+}
