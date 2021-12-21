@@ -56,7 +56,7 @@ const PathExplorerTreeView = (props: PathExplorerProps) => {
 
   async function loadTreeViewAsync() {
     let childrenEntries: PathEntry[];
-    
+
     try {
       childrenEntries = await getChildrenEntriesAsync(path);
     } catch (error) {
@@ -74,7 +74,9 @@ const PathExplorerTreeView = (props: PathExplorerProps) => {
   async function loadEntryChildren(entryPath: string) {
     if (!entryPath) return; // This happens when collapsing a treeview node.
 
-    let entry = locateEntry(entries, entryPath);
+    // Note: Recursive lookups are not needed as this component only stores the first level of file/folders of one specific path at a time.
+    let entry = entries.find(x => x.path === entryPath);
+
     if (!entry) {
       console.error(`"${entryPath}" was not found in the loaded entries`);
       return;
@@ -142,20 +144,6 @@ function handleChildrenEntriesError(error: Error | unknown) {
     console.warn(error);
     alert(`ERROR: ${error.message}`);
   } else throw error;
-}
-
-function locateEntry(entries: PathEntry[], entryPath: string): PathEntry | null {
-  // NOTE: This could be optimized with additional complexity to use a dictionary in the component state to avoid the recursive lookups, but this simpler approach is good enough for now as we use an isolated small instance of the PathExplorerTreeView component for each individual subfolder (primarily for performance reasons), which only tracks the immediate children entries in its state.
-  for (let entry of entries) {
-    if (entry.path === entryPath) {
-      return entry;
-    } else if (entry.children) {
-      let recursiveMatch = locateEntry(entry.children, entryPath);
-      if (recursiveMatch) return recursiveMatch;
-    }
-  }
-
-  return null;
 }
 
 export default PathExplorer;
