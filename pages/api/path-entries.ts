@@ -1,3 +1,4 @@
+import { HttpCodes } from "./../../lib/helpers";
 import { readdir } from "fs/promises";
 import type { NextApiRequest, NextApiResponse } from "next";
 import fs from "fs";
@@ -28,7 +29,17 @@ export default async function handler(
   let sourcePath = req.query.path as string;
 
   if (!fs.existsSync(sourcePath)) {
-    res.status(400).json({ error: `The requested path (${sourcePath}) doesn't exist.` });
+    res
+      .status(HttpCodes.BadRequest)
+      .json({ error: `The requested path (${sourcePath}) doesn't exist.` });
+    return;
+  }
+
+  if (!fs.statSync(sourcePath).isDirectory()) {
+    res
+      .status(HttpCodes.BadRequest)
+      .json({ error: `The requested path (${sourcePath}) is not a directory.` });
+    return;
   }
 
   let entries = await getEntriesAsync(sourcePath);

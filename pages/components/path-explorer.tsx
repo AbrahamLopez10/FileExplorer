@@ -30,31 +30,45 @@ const PathExplorerTreeView = (props: PathExplorerProps) => {
 
   const { path } = props;
   let [entries, setEntries] = useState<PathEntry[]>([]);
+  let validPath: boolean;
   let unmounting = false;
 
   useMountEffect(() => {
-    console.log("Loading tree view for:", path);
+    console.log("Loading tree view for", path);
 
-    loadTreeView();
+    loadTreeViewAsync()
+      .then(valid => (validPath = valid!))
+      .catch(e => console.error(e));
 
     return () => {
-      console.log("Unloading tree view for:", path);
+      console.log("Unloading tree view for", path);
       unmounting = true;
     };
   });
 
   useTimerEffect(() => {
-    console.debug("Refreshing tree view for:", path);
-    loadTreeView();
+    if (!validPath) return;
+
+    console.debug("Refreshing tree view for", path);
+
+    loadTreeViewAsync();
   }, AutoRefreshIntervalMilliseconds);
 
-  function loadTreeView() {
-    getChildrenEntriesAsync(path)
-      .then(entries => {
-        if (unmounting) return; // If component is unmounting then don't update the state anymore.
-        setEntries(entries);
-      })
-      .catch(handleChildrenEntriesError);
+  async function loadTreeViewAsync() {
+    let childrenEntries: PathEntry[];
+    
+    try {
+      childrenEntries = await getChildrenEntriesAsync(path);
+    } catch (error) {
+      handleChildrenEntriesError(error);
+      return false;
+    }
+
+    if (unmounting) return; // If component is unmounting then don't update the state anymore.
+
+    setEntries(childrenEntries);
+
+    return true;
   }
 
   async function loadEntryChildren(entryPath: string) {
@@ -126,7 +140,7 @@ class PathExplorerError extends Error {}
 function handleChildrenEntriesError(error: Error | unknown) {
   if (error instanceof PathExplorerError) {
     console.warn(error);
-    alert(error.message);
+    alert(`ERROR: ${error.message}`);
   } else throw error;
 }
 
