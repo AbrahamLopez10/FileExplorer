@@ -1,4 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
+import path from "path";
 
 export type PathsResponse = {
   paths: string[];
@@ -20,7 +21,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<PathsR
       paths.push(arg);
     }
 
-    if (arg.endsWith("/next")) {
+    if (arg.endsWith(`${path.sep}next`)) {
       // The app arguments start after the "next" executable is encountered in the process arguments.
       appArgumentsStarted = true;
     }
